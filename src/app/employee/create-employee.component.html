@@ -1,0 +1,172 @@
+<form [formGroup]="employeeForm" (ngSubmit)="onSubmit()" class="form-horizontal">
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h3 class="panel-title">{{formTitle}}</h3>
+    </div>
+    <div class="panel-body">
+      
+      <div class="form-group" [ngClass]="{'has-error': formErrors.fullName}">
+        <label class="col-sm-2 control-label" for="fullName">Full Name</label>
+        <div class="col-sm-8">
+          <input id="fullName" type="text" class="form-control" formControlName="fullName">
+          <span class="help-block" *ngIf="formErrors.fullName">
+            {{formErrors.fullName}}
+          </span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-md-2 control-label">Contact Preference</label>
+        <div class="col-md-8">
+          <label class="radio-inline">
+            <input type="radio" value="email" formControlName="contactPreference">Email</label>
+          <label class="radio-inline">
+            <input type="radio" value="phone" formControlName="contactPreference">Phone</label>
+        </div>
+      </div>
+
+      <div formGroupName="emailGroup">
+        <div class="form-group" [ngClass]="{'has-error': formErrors.email}">
+          <label class="col-sm-2 control-label" for="email">Email</label>
+          <div class="col-sm-8">
+            <input id="email" type="text" formControlName="email" class="form-control">
+            <span class="help-block" *ngIf="formErrors.email">
+              {{formErrors.email}}
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group" [ngClass]="{'has-error': formErrors.confirmEmail || formErrors.emailGroup}">
+          <label class="col-sm-2 control-label" for="confirmEmail">Confirm Email</label>
+          <div class="col-sm-8">
+            <input id="confirmEmail" type="text" formControlName="confirmEmail" class="form-control">
+            <span class="help-block" *ngIf="formErrors.confirmEmail || formErrors.emailGroup">
+              {{formErrors.confirmEmail ? formErrors.confirmEmail : formErrors.emailGroup}}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" [ngClass]="{'has-error': formErrors.phone}">
+        <label class="col-sm-2 control-label" for="phone">Phone</label>
+        <div class="col-sm-8">
+          <input id="phone" type="text" class="form-control" formControlName="phone" (blur)="logValidationErrors()">
+          <span class="help-block" *ngIf="formErrors.phone">
+            {{formErrors.phone}}
+          </span>
+        </div>
+      </div>
+
+      <div class='form-group'>
+        <div class='col-sm-offset-2 col-sm-4'>
+          <button type='button' class='btn btn-primary' (click)="addSkillButtonClick()" [disabled]="employeeForm.get('skills').invalid">
+            Add Skill</button>
+        </div>
+      </div>
+
+      <div class='well'>
+        <div formArrayName="skills" *ngFor="let skill of employeeForm.get('skills').controls; let i = index">
+          <hr *ngIf="i>0">
+          <div [formGroupName]="i">
+
+            <div class="form-group" [ngClass]="{'has-error': skill.get('skillName').invalid && skill.get('skillName').touched}">
+              <label class="col-sm-2 control-label" [attr.for]="'skillName' + i">
+                Skill
+              </label>
+              <div class="col-sm-4">
+                <input type="text" class="form-control" [id]="'skillName' + i" formControlName="skillName" placeholder="C#, Java, Angular etc...">
+                <span class="help-block" *ngIf="skill.get('skillName').errors?.required && skill.get('skillName').touched">
+                  Skill Name is required
+                </span>
+              </div>
+              <div class="col-sm-6" *ngIf="employeeForm.get('skills').length > 1">
+                <button type="button" class="btn btn-danger btn-sm pull-right" 
+                title="Delete Skill" (click)="removeSkillButtonClick(i)">
+                  <span class="glyphicon glyphicon-remove"></span>
+                </button>
+              </div>
+            </div>
+            <div class="form-group" [ngClass]="{'has-error': skill.get('experienceInYears').invalid && skill.get('experienceInYears').touched}">
+              <label class="col-sm-2 control-label" [attr.for]="'experienceInYears' + i">
+                Experience
+              </label>
+              <div class="col-sm-4">
+                <input type="text" class="form-control" [id]="'experienceInYears' + i" formControlName="experienceInYears"
+                  placeholder="In Years">
+                <span class="help-block" *ngIf="skill.get('experienceInYears').errors?.required && skill.get('experienceInYears').touched">
+                  Experience is required
+                </span>
+              </div>
+            </div>
+
+            <div class="form-group" [ngClass]="{'has-error': skill.get('proficiency').invalid && skill.get('proficiency').touched}">
+              <label class="col-md-2 control-label">Proficiency</label>
+              <div class="col-md-8">
+                <label class="radio-inline">
+                  <input type="radio" value="beginner" formControlName="proficiency">Beginner
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" value="intermediate" formControlName="proficiency">Intermediate
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" value="advanced" formControlName="proficiency">Advanced
+                </label>
+                <span class="help-block" *ngIf="skill.get('proficiency').errors?.required && skill.get('proficiency').touched">
+                  Proficiency is required
+                </span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="panel-footer">
+      <div class="btn-toolbar">
+        <button class="btn btn-primary" type="submit" [disabled]="employeeForm.invalid">Save</button>
+        <button class="btn btn-primary" type="button" (click)="onLoadDataClick()">Load Data</button>
+      </div>
+    </div>
+  </div>
+</form>
+<table border="1">
+  <tr>
+    <th style="padding: 10px">FormGroup</th>
+    <th style="padding: 10px">FormControl (fullName)</th>
+    <th style="padding: 10px">FormControl (email)</th>
+    <th style="padding: 10px">FormControl (confirmEmail)</th>
+    <th style="padding: 10px">FormControl (phone)</th>
+  </tr>
+  <tr>
+    <td style="padding: 10px">
+      touched : {{ employeeForm.touched }}
+      <br /> dirty : {{ employeeForm.dirty }}
+      <br /> valid : {{ employeeForm.valid }}
+      <br /> Form Values : {{employeeForm.value | json}}
+    </td>
+    <td style="padding: 10px">
+      touched : {{ employeeForm.get('fullName').touched }}
+      <br /> dirty : {{ employeeForm.get('fullName').dirty }}
+      <br /> valid : {{ employeeForm.get('fullName').valid }}
+      <br /> FullName Value : {{employeeForm.get('fullName').value}}
+    </td>
+    <td style="padding: 10px">
+      touched : {{ employeeForm.get('emailGroup').get('email').touched }}
+      <br /> dirty : {{ employeeForm.get('emailGroup').get('email').dirty }}
+      <br /> valid : {{ employeeForm.get('emailGroup').get('email').valid }}
+      <br /> Email Group Value : {{employeeForm.get('emailGroup').get('email').value}}
+    </td>
+    <td style="padding: 10px">
+      touched : {{ employeeForm.get('emailGroup').get('confirmEmail').touched }}
+      <br /> dirty : {{ employeeForm.get('emailGroup').get('confirmEmail').dirty }}
+      <br /> valid : {{ employeeForm.get('emailGroup').get('confirmEmail').valid }}
+      <br /> Email Group Value : {{employeeForm.get('emailGroup').get('confirmEmail').value}}
+    </td>
+    <td style="padding: 10px">
+      touched : {{ employeeForm.get('phone').touched }}
+      <br /> dirty : {{ employeeForm.get('phone').dirty }}
+      <br /> valid : {{ employeeForm.get('phone').valid }}
+      <br /> Phone Value : {{employeeForm.get('phone').value}}
+    </td>
+  </tr>
+</table>
