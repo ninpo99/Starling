@@ -25,3 +25,11 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+
+## Running Applications
+run 'ng s -o' in one GIT terminals to start application - -o will open application webpage in default browser after strart
+
+run 'json-server --watch db.json' in separarate GIT terminal to start embedded datasource to allow REST crud operations
+
+
+
